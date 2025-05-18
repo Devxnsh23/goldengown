@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 $conn = mysqli_connect("localhost", "root", "", "goldengown");
 
 function sizeDifferenceFlag($products_json, $notes) {
