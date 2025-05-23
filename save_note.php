@@ -1,6 +1,5 @@
 <?php
 include 'config.php';
-$conn = mysqli_connect("localhost", "root", "", "goldengown");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $orderId = $_POST['orderId'];
