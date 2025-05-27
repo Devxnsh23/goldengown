@@ -3,12 +3,32 @@ error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 include 'config.php';
 
 // --- Fetch Orders ---
-$sql = "SELECT orderId, products, notes, order_status, address, invoice_number, created_at, payment_method 
+$sql = "SELECT orderId, products, notes, order_status, internal_status, address, invoice_number, created_at, payment_method 
         FROM orders 
         WHERE payment_status IN ('Paid', 'COD')
         ORDER BY created_at DESC";
 
 $result = $conn->query($sql);
+
+
+$internal_flow = [
+    'created',
+    'sent for cutting',
+    'cutting in process',
+    'cutting done',
+    'sent for stitching',
+    'stitching in progress',
+    'stitching done',
+    'sent for embroidery, ironing, buttoning',
+    'embroidery, ironing, buttoning in process',
+    'embroidery, ironing, buttoning done',
+    'sent for quality check',
+    'quality check done',
+    'rework',
+    'rework done',
+    'dispatched'
+];
+
 
 
 
@@ -37,6 +57,26 @@ $sql    = "SELECT orderId, products, notes, order_status, address, invoice_numbe
            WHERE payment_status IN ('Paid','COD')
            ORDER BY created_at DESC";
 $result = $conn->query($sql);
+
+
+$internal_flow = [
+    'created',
+    'sent for cutting',
+    'cutting in process',
+    'cutting done',
+    'sent for stitching',
+    'stitching in progress',
+    'stitching done',
+    'sent for embroidery, ironing, buttoning',
+    'embroidery, ironing, buttoning in process',
+    'embroidery, ironing, buttoning done',
+    'sent for quality check',
+    'quality check done',
+    'rework',
+    'rework done',
+    'dispatched'
+];
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -82,14 +122,16 @@ $result = $conn->query($sql);
         <th>Mobile</th>
         <th>Payment Method</th>
         <th>Order Status</th>
+      <th>Internal Workflow</th>
         <th>Size Difference</th>
-        <th>Print Options</th>
+<th>Print Options</th>
       </tr>
     </thead>
     <tbody>
       <?php
       $count = 1;
       if ($result && $result->num_rows) {
+        
         while ($row = $result->fetch_assoc()) {
           $flag    = sizeDifferenceFlag($row['products'], $row['notes']);
           $bg      = $flag === 'red' ? '#332222' : '#223322';
@@ -110,10 +152,18 @@ $result = $conn->query($sql);
         <td data-label="Mobile"><?= $mob ?></td>
         <td data-label="Payment Method"><?= $pm ?></td>
         <td data-label="Order Status"><?= $os ?></td>
+<td data-label="Internal Workflow">
+    <a href="flowchart.php?orderId=<?= $oid ?>" target="_blank" class="btn btn-sm btn-warning">Show</a>
+</td>
+
         <td data-label="Size Difference">
           <span class="color-box <?= $flag ?>"></span>
         </td>
-        <td data-label="Print Options">
+        
+
+
+
+<td data-label="Print Options">
           <button
             class="btn btn-sm btn-info mb-2"
             type="button"
