@@ -9,6 +9,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_query($conn, $query);
 }
 
-header("Location: dashboard_d.php");
+header("Location: dashboard.php");
 exit;
 ?>
